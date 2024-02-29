@@ -24,8 +24,6 @@
     <ul id="playlist"></ul>
 
     <script>
-        let currentAudio = null;
-
         // Load MP3 files from the specified folder
         fetch('https://api.github.com/repos/HordeMail/gitgit4/contents/audioFolder')
             .then(response => response.json())
@@ -48,16 +46,18 @@
                     link.onclick = function(event) {
                         event.preventDefault();
                         const audioPlayer = document.getElementById('audioPlayer');
-                        if (currentAudio !== null) {
-                            currentAudio.pause();
-                        }
-                        currentAudio = audioPlayer;
                         audioPlayer.src = this.href;
                         audioPlayer.play();
                     };
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
                 });
+
+                // Play the first song in the playlist by default
+                if (mp3Files.length > 0) {
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = mp3Files[0].download_url;
+                }
             })
             .catch(error => {
                 console.error('Error loading MP3 files:', error);
@@ -75,24 +75,17 @@
                 }
             }
             const nextIndex = (currentIndex + 1) % playlistItems.length;
-            const nextAudio = new Audio(playlistItems[nextIndex].href);
-            if (currentAudio !== null) {
-                currentAudio.pause();
-            }
-            currentAudio = nextAudio;
-            nextAudio.play();
+            audioPlayer.src = playlistItems[nextIndex].href;
+            audioPlayer.play();
         });
 
         // Add event listener for shuffle button
         document.getElementById('shuffleButton').addEventListener('click', function() {
+            const audioPlayer = document.getElementById('audioPlayer');
             const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
             const nextIndex = Math.floor(Math.random() * playlistItems.length);
-            const nextAudio = new Audio(playlistItems[nextIndex].href);
-            if (currentAudio !== null) {
-                currentAudio.pause();
-            }
-            currentAudio = nextAudio;
-            nextAudio.play();
+            audioPlayer.src = playlistItems[nextIndex].href;
+            audioPlayer.play();
         });
     </script>
 </body>
