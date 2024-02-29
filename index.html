@@ -13,6 +13,12 @@
         Your browser does not support the audio element.
     </audio>
 
+    <!-- Skip button -->
+    <button id="skipButton">Skip</button>
+
+    <!-- Shuffle button -->
+    <button id="shuffleButton">Shuffle</button>
+
     <!-- Playlist -->
     <h2>Playlist</h2>
     <ul id="playlist"></ul>
@@ -40,13 +46,7 @@
                     const listItem = document.createElement('li');
                     const link = document.createElement('a');
                     link.textContent = file.name;
-                    link.href = 'javascript:void(0)'; // Prevent downloading the file
-                    link.onclick = function(event) {
-                        event.preventDefault();
-                        currentIndex = Array.from(playlistItems).findIndex(item => item === this);
-                        audioPlayer.src = mp3Files[currentIndex].download_url;
-                        audioPlayer.play();
-                    };
+                    link.href = file.download_url;
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
                 });
@@ -55,7 +55,7 @@
                 // Play a random song in the playlist by default
                 if (mp3Files.length > 0) {
                     currentIndex = Math.floor(Math.random() * playlistItems.length);
-                    audioPlayer.src = mp3Files[currentIndex].download_url;
+                    audioPlayer.src = playlistItems[currentIndex].href;
                     audioPlayer.play();
                 }
             })
@@ -65,8 +65,22 @@
 
         // Add event listener for ended event
         audioPlayer.addEventListener('ended', function() {
+            currentIndex = (currentIndex + 1) % playlistItems.length;
+            audioPlayer.src = playlistItems[currentIndex].href;
+            audioPlayer.play();
+        });
+
+        // Add event listener for skip button
+        document.getElementById('skipButton').addEventListener('click', function() {
+            currentIndex = (currentIndex + 1) % playlistItems.length;
+            audioPlayer.src = playlistItems[currentIndex].href;
+            audioPlayer.play();
+        });
+
+        // Add event listener for shuffle button
+        document.getElementById('shuffleButton').addEventListener('click', function() {
             currentIndex = Math.floor(Math.random() * playlistItems.length);
-            audioPlayer.src = mp3Files[currentIndex].download_url;
+            audioPlayer.src = playlistItems[currentIndex].href;
             audioPlayer.play();
         });
     </script>
