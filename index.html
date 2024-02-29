@@ -52,9 +52,10 @@
                 });
                 playlistItems = document.getElementById('playlist').getElementsByTagName('a');
 
-                // Play the first song in the playlist by default
+                // Play a random song in the playlist by default
                 if (mp3Files.length > 0) {
-                    audioPlayer.src = mp3Files[0].download_url;
+                    currentIndex = Math.floor(Math.random() * playlistItems.length);
+                    audioPlayer.src = playlistItems[currentIndex].href;
                     audioPlayer.play();
                 }
             })
