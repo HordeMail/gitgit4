@@ -21,6 +21,12 @@
     <ul id="playlist"></ul>
 
     <script>
+        // Global variables
+        let currentIndex = 0;
+        let audioPlayer = document.getElementById('audioPlayer');
+        let playlistItems = document.getElementById('playlist').getElementsByTagName('a');
+        let shuffleMode = false;
+
         // Load MP3 files from the specified folder
         fetch('https://api.github.com/repos/Playbookwiki/gitgit4/contents/audioFolder')
             .then(response => response.json())
@@ -42,37 +48,46 @@
                     link.href = file.download_url;
                     link.onclick = function(event) {
                         event.preventDefault();
-                        const audioPlayer = document.getElementById('audioPlayer');
-                        audioPlayer.src = this.href;
-                        audioPlayer.play();
+                        currentIndex = Array.from(playlistItems).findIndex(item => item === this);
+                        playSong(currentIndex);
                     };
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
                 });
+                playlistItems = document.getElementById('playlist').getElementsByTagName('a');
 
                 // Play the first song in the playlist by default
                 if (mp3Files.length > 0) {
-                    const audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = mp3Files[0].download_url;
+                    playSong(0);
                 }
             })
             .catch(error => {
                 console.error('Error loading MP3 files:', error);
             });
 
+        // Function to play a song by index
+        function playSong(index) {
+            audioPlayer.src = playlistItems[index].href;
+            audioPlayer.play();
+        }
+
         // Add event listener for shuffle button
         document.getElementById('shuffleButton').addEventListener('click', function() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            if (audioPlayer.src) {
-                const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
-                const currentIndex = Array.from(playlistItems).findIndex(item => item.href === audioPlayer.src);
-                let nextIndex;
-                do {
-                    nextIndex = Math.floor(Math.random() * playlistItems.length);
-                } while (nextIndex === currentIndex);
-                
-                audioPlayer.src = playlistItems[nextIndex].href;
-                audioPlayer.play();
+            shuffleMode = !shuffleMode;
+            if (shuffleMode) {
+                const nextIndex = Math.floor(Math.random() * playlistItems.length);
+                playSong(nextIndex);
+            }
+        });
+
+        // Add event listener for ended event on the audio player
+        audioPlayer.addEventListener('ended', function() {
+            if (shuffleMode) {
+                const nextIndex = Math.floor(Math.random() * playlistItems.length);
+                playSong(nextIndex);
+            } else {
+                currentIndex = (currentIndex + 1) % playlistItems.length;
+                playSong(currentIndex);
             }
         });
     </script>
