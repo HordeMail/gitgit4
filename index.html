@@ -13,12 +13,6 @@
         Your browser does not support the audio element.
     </audio>
 
-    <!-- Skip button -->
-    <button id="skipButton">Skip</button>
-
-    <!-- Shuffle button -->
-    <button id="shuffleButton">Shuffle</button>
-
     <!-- Playlist -->
     <h2>Playlist</h2>
     <ul id="playlist"></ul>
@@ -72,20 +66,6 @@
         // Add event listener for ended event
         audioPlayer.addEventListener('ended', function() {
             currentIndex = (currentIndex + 1) % playlistItems.length;
-            audioPlayer.src = mp3Files[currentIndex].download_url;
-            audioPlayer.play();
-        });
-
-        // Add event listener for skip button
-        document.getElementById('skipButton').addEventListener('click', function() {
-            currentIndex = (currentIndex + 1) % playlistItems.length;
-            audioPlayer.src = mp3Files[currentIndex].download_url;
-            audioPlayer.play();
-        });
-
-        // Add event listener for shuffle button
-        document.getElementById('shuffleButton').addEventListener('click', function() {
-            currentIndex = Math.floor(Math.random() * playlistItems.length);
             audioPlayer.src = mp3Files[currentIndex].download_url;
             audioPlayer.play();
         });
