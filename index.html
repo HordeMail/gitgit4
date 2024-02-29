@@ -35,9 +35,10 @@
                     return a.name.localeCompare(b.name);
                 });
 
-                // Create playlist
+                // Create playlist (limit to first 10 items)
                 const playlist = document.getElementById('playlist');
-                mp3Files.forEach(file => {
+                for (let i = 0; i < Math.min(10, mp3Files.length); i++) {
+                    const file = mp3Files[i];
                     const listItem = document.createElement('li');
                     const link = document.createElement('a');
                     link.textContent = file.name;
@@ -50,7 +51,7 @@
                     };
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
-                });
+                }
                 playlistItems = document.getElementById('playlist').getElementsByTagName('a');
 
                 // Play the first song in the playlist by default
