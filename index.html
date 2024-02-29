@@ -34,14 +34,27 @@
             
             // Set up XMLHttpRequest
             var xhr = new XMLHttpRequest();
-            xhr.open('PUT', 'https://github.com/HordeMail/gitgit4/tree/main/audioFolder/raw/main/' + fileName, true);
+            xhr.open('PUT', 'https://api.github.com/repos/your_username/your_repository/contents/' + fileName, true);
+            xhr.setRequestHeader('Authorization', 'token YOUR_GITHUB_TOKEN');
             
             // Upload file
-            xhr.send(file);
+            xhr.onload = function () {
+                if (xhr.status === 201) {
+                    // File uploaded successfully
+                    var audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = 'https://raw.githubusercontent.com/your_username/your_repository/main/' + fileName;
+                    alert('File uploaded successfully!');
+                } else {
+                    // Error uploading file
+                    alert('Failed to upload file. Please try again.');
+                }
+            };
             
-            // Display uploaded file in audio player
-            var audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.src = 'https://raw.githubusercontent.com/your_username/your_repository/main/' + fileName;
+            xhr.send(JSON.stringify({
+                message: 'Upload MP3 file',
+                content: btoa(unescape(encodeURIComponent(file))),
+                branch: 'main'
+            }));
         });
     </script>
 </body>
