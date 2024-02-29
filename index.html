@@ -8,54 +8,30 @@
 <body>
     <h1>MP3 Player</h1>
     
-    <!-- Form for uploading MP3 files -->
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="mp3File" accept=".mp3" required>
-        <button type="submit">Upload MP3</button>
-    </form>
-    
     <!-- Audio player -->
     <audio id="audioPlayer" controls>
         Your browser does not support the audio element.
     </audio>
 
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var fileInput = document.getElementById('mp3File');
-            var file = fileInput.files[0];
-            
-            // Generate a random file name
-            var fileName = 'audio_' + Date.now() + '.mp3';
-            
-            // Create a FormData object and append the file
-            var formData = new FormData();
-            formData.append('file', file, fileName);
-            
-            // Set up XMLHttpRequest
-            var xhr = new XMLHttpRequest();
-            xhr.open('PUT', 'https://api.github.com/repos/your_username/your_repository/contents/' + fileName, true);
-            xhr.setRequestHeader('Authorization', 'token YOUR_GITHUB_TOKEN');
-            
-            // Upload file
-            xhr.onload = function () {
-                if (xhr.status === 201) {
-                    // File uploaded successfully
-                    var audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = 'https://github.com/HordeMail/gitgit4/tree/main/audioFolder' + fileName;
-                    alert('File uploaded successfully!');
-                } else {
-                    // Error uploading file
-                    alert('Failed to upload file. Please try again.');
-                }
-            };
-            
-            xhr.send(JSON.stringify({
-                message: 'Upload MP3 file',
-                content: btoa(unescape(encodeURIComponent(file))),
-                branch: 'main'
-            }));
-        });
+        // Load MP3 files from the specified folder
+        fetch('https://api.github.com/repos/your_username/your_repository/contents/audioFolder')
+            .then(response => response.json())
+            .then(data => {
+                // Filter out files from the response
+                const mp3Files = data.filter(file => file.name.endsWith('.mp3'));
+                
+                // Select a random MP3 file to play
+                const randomIndex = Math.floor(Math.random() * mp3Files.length);
+                const randomFile = mp3Files[randomIndex];
+                
+                // Set audio player source to the selected MP3 file
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = randomFile.download_url;
+            })
+            .catch(error => {
+                console.error('Error loading MP3 files:', error);
+            });
     </script>
 </body>
 </html>
