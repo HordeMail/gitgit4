@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3 Player</title>
 </head>
 <body>
-    <h1>MP3 Player</h1>
-    
     <!-- Audio player -->
     <audio id="audioPlayer" controls controlsList="nodownload">
         Your browser does not support the audio element.
@@ -21,6 +18,10 @@
     <ul id="playlist"></ul>
 
     <script>
+        let currentIndex = 0;
+        let audioPlayer = document.getElementById('audioPlayer');
+        let playlistItems = document.getElementById('playlist').getElementsByTagName('a');
+
         // Load MP3 files from the specified folder
         fetch('https://api.github.com/repos/HordeMail/gitgit4/contents/audioFolder')
             .then(response => response.json())
@@ -49,16 +50,25 @@
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
                 });
+                playlistItems = document.getElementById('playlist').getElementsByTagName('a');
 
                 // Play the first song in the playlist by default
                 if (mp3Files.length > 0) {
                     const audioPlayer = document.getElementById('audioPlayer');
                     audioPlayer.src = mp3Files[0].download_url;
+                    audioPlayer.play();
                 }
             })
             .catch(error => {
                 console.error('Error loading MP3 files:', error);
             });
+
+        // Add event listener for ended event
+        audioPlayer.addEventListener('ended', function() {
+            currentIndex = (currentIndex + 1) % playlistItems.length;
+            audioPlayer.src = playlistItems[currentIndex].href;
+            audioPlayer.play();
+        });
 
         // Add event listener for shuffle button
         document.getElementById('shuffleButton').addEventListener('click', function() {
