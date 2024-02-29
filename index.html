@@ -15,7 +15,7 @@
 
     <!-- Playlist -->
     <h2>Playlist</h2>
-    <ol id="playlist"></ol>
+    <ul id="playlist"></ul>
 
     <script>
         // Load MP3 files from the specified folder
@@ -25,23 +25,17 @@
                 // Filter out files from the response
                 const mp3Files = data.filter(file => file.name.endsWith('.mp3'));
                 
-                // Sort files by numbers and then alphabetically
+                // Sort files alphabetically
                 mp3Files.sort((a, b) => {
-                    const aNumber = parseInt(a.name.match(/\d+/));
-                    const bNumber = parseInt(b.name.match(/\d+/));
-                    if (!isNaN(aNumber) && !isNaN(bNumber)) {
-                        return aNumber - bNumber;
-                    } else {
-                        return a.name.localeCompare(b.name);
-                    }
+                    return a.name.localeCompare(b.name);
                 });
 
                 // Create playlist
                 const playlist = document.getElementById('playlist');
-                mp3Files.forEach((file, index) => {
+                mp3Files.forEach(file => {
                     const listItem = document.createElement('li');
                     const link = document.createElement('a');
-                    link.textContent = `${index + 1}. ${file.name}`;
+                    link.textContent = file.name;
                     link.href = file.download_url;
                     link.onclick = function(event) {
                         event.preventDefault();
