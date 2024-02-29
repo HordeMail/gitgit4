@@ -13,6 +13,10 @@
         Your browser does not support the audio element.
     </audio>
 
+    <!-- Playlist -->
+    <h2>Playlist</h2>
+    <ul id="playlist"></ul>
+
     <script>
         // Load MP3 files from the specified folder
         fetch('https://api.github.com/repos/HordeMail/gitgit4/contents/audioFolder')
@@ -21,13 +25,28 @@
                 // Filter out files from the response
                 const mp3Files = data.filter(file => file.name.endsWith('.mp3'));
                 
-                // Select a random MP3 file to play
-                const randomIndex = Math.floor(Math.random() * mp3Files.length);
-                const randomFile = mp3Files[randomIndex];
-                
-                // Set audio player source to the selected MP3 file
-                const audioPlayer = document.getElementById('audioPlayer');
-                audioPlayer.src = randomFile.download_url;
+                // Create playlist
+                const playlist = document.getElementById('playlist');
+                mp3Files.forEach(file => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.textContent = file.name;
+                    link.href = file.download_url;
+                    link.onclick = function(event) {
+                        event.preventDefault();
+                        const audioPlayer = document.getElementById('audioPlayer');
+                        audioPlayer.src = this.href;
+                        audioPlayer.play();
+                    };
+                    listItem.appendChild(link);
+                    playlist.appendChild(listItem);
+                });
+
+                // Play the first song in the playlist by default
+                if (mp3Files.length > 0) {
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = mp3Files[0].download_url;
+                }
             })
             .catch(error => {
                 console.error('Error loading MP3 files:', error);
