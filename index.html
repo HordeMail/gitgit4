@@ -19,6 +19,7 @@
 
     <script>
         let currentIndex = 0;
+        let previousIndex = -1; // Initialize previous index to an invalid value
         let audioPlayer = document.getElementById('audioPlayer');
         let playlistItems = document.getElementById('playlist').getElementsByTagName('a');
 
@@ -75,14 +76,15 @@
             const audioPlayer = document.getElementById('audioPlayer');
             if (audioPlayer.src) {
                 const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
-                const currentIndex = Array.from(playlistItems).findIndex(item => item.href === audioPlayer.src);
                 let nextIndex;
                 do {
                     nextIndex = Math.floor(Math.random() * playlistItems.length);
-                } while (nextIndex === currentIndex);
+                } while (nextIndex === currentIndex || nextIndex === previousIndex);
                 
                 audioPlayer.src = playlistItems[nextIndex].href;
                 audioPlayer.play();
+                previousIndex = currentIndex;
+                currentIndex = nextIndex;
             }
         });
     </script>
