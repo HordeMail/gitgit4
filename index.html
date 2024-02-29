@@ -13,6 +13,9 @@
         Your browser does not support the audio element.
     </audio>
 
+    <!-- Skip button -->
+    <button id="skipButton">Skip</button>
+
     <!-- Playlist -->
     <h2>Playlist</h2>
     <ul id="playlist"></ul>
@@ -56,6 +59,25 @@
             .catch(error => {
                 console.error('Error loading MP3 files:', error);
             });
+
+        // Add event listener for skip button
+        document.getElementById('skipButton').addEventListener('click', function() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            if (audioPlayer.src) {
+                const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
+                let nextIndex = -1;
+                for (let i = 0; i < playlistItems.length; i++) {
+                    if (playlistItems[i].href === audioPlayer.src) {
+                        nextIndex = (i + 1) % playlistItems.length; // Wrap around to the beginning of the playlist
+                        break;
+                    }
+                }
+                if (nextIndex !== -1) {
+                    audioPlayer.src = playlistItems[nextIndex].href;
+                    audioPlayer.play();
+                }
+            }
+        });
     </script>
 </body>
 </html>
