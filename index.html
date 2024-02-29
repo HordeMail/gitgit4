@@ -73,8 +73,8 @@
 
         // Add event listener for shuffle button
         document.getElementById('shuffleButton').addEventListener('click', function() {
-            shuffleMode = !shuffleMode;
-            if (shuffleMode) {
+            if (!shuffleMode) {
+                shuffleMode = true;
                 const nextIndex = Math.floor(Math.random() * playlistItems.length);
                 playSong(nextIndex);
             }
@@ -83,12 +83,10 @@
         // Add event listener for ended event on the audio player
         audioPlayer.addEventListener('ended', function() {
             if (shuffleMode) {
-                const nextIndex = Math.floor(Math.random() * playlistItems.length);
-                playSong(nextIndex);
-            } else {
-                currentIndex = (currentIndex + 1) % playlistItems.length;
-                playSong(currentIndex);
+                shuffleMode = false; // Disable shuffle mode after one song
             }
+            currentIndex = (currentIndex + 1) % playlistItems.length;
+            playSong(currentIndex);
         });
     </script>
 </body>
