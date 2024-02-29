@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Production Tool</title>
+    <title>MP3 Player</title>
 </head>
 <body>
-    <h1>Production Tool</h1>
+    <h1>MP3 Player</h1>
     
     <!-- Audio player -->
     <audio id="audioPlayer" controls controlsList="nodownload">
@@ -24,6 +24,8 @@
     <ul id="playlist"></ul>
 
     <script>
+        let currentAudio = null;
+
         // Load MP3 files from the specified folder
         fetch('https://api.github.com/repos/HordeMail/gitgit4/contents/audioFolder')
             .then(response => response.json())
@@ -46,18 +48,16 @@
                     link.onclick = function(event) {
                         event.preventDefault();
                         const audioPlayer = document.getElementById('audioPlayer');
+                        if (currentAudio !== null) {
+                            currentAudio.pause();
+                        }
+                        currentAudio = audioPlayer;
                         audioPlayer.src = this.href;
                         audioPlayer.play();
                     };
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
                 });
-
-                // Play the first song in the playlist by default
-                if (mp3Files.length > 0) {
-                    const audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = mp3Files[0].download_url;
-                }
             })
             .catch(error => {
                 console.error('Error loading MP3 files:', error);
@@ -66,36 +66,33 @@
         // Add event listener for skip button
         document.getElementById('skipButton').addEventListener('click', function() {
             const audioPlayer = document.getElementById('audioPlayer');
-            if (audioPlayer.src) {
-                const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
-                let nextIndex = -1;
-                for (let i = 0; i < playlistItems.length; i++) {
-                    if (playlistItems[i].href === audioPlayer.src) {
-                        nextIndex = (i + 1) % playlistItems.length; // Wrap around to the beginning of the playlist
-                        break;
-                    }
-                }
-                if (nextIndex !== -1) {
-                    audioPlayer.src = playlistItems[nextIndex].href;
-                    audioPlayer.play();
+            const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
+            let currentIndex = -1;
+            for (let i = 0; i < playlistItems.length; i++) {
+                if (playlistItems[i].href === audioPlayer.src) {
+                    currentIndex = i;
+                    break;
                 }
             }
+            const nextIndex = (currentIndex + 1) % playlistItems.length;
+            const nextAudio = new Audio(playlistItems[nextIndex].href);
+            if (currentAudio !== null) {
+                currentAudio.pause();
+            }
+            currentAudio = nextAudio;
+            nextAudio.play();
         });
 
         // Add event listener for shuffle button
         document.getElementById('shuffleButton').addEventListener('click', function() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            if (audioPlayer.src) {
-                const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
-                const currentIndex = Array.from(playlistItems).findIndex(item => item.href === audioPlayer.src);
-                let nextIndex;
-                do {
-                    nextIndex = Math.floor(Math.random() * playlistItems.length);
-                } while (nextIndex === currentIndex);
-                
-                audioPlayer.src = playlistItems[nextIndex].href;
-                audioPlayer.play();
+            const playlistItems = document.getElementById('playlist').getElementsByTagName('a');
+            const nextIndex = Math.floor(Math.random() * playlistItems.length);
+            const nextAudio = new Audio(playlistItems[nextIndex].href);
+            if (currentAudio !== null) {
+                currentAudio.pause();
             }
+            currentAudio = nextAudio;
+            nextAudio.play();
         });
     </script>
 </body>
