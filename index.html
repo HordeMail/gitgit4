@@ -65,7 +65,7 @@
 
         // Add event listener for ended event
         audioPlayer.addEventListener('ended', function() {
-            currentIndex = (currentIndex + 1) % playlistItems.length;
+            currentIndex = Math.floor(Math.random() * playlistItems.length);
             audioPlayer.src = mp3Files[currentIndex].download_url;
             audioPlayer.play();
         });
