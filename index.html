@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MP3 Player</title>
+    <style>
+        #playlist {
+            max-height: 200px; /* Limit the height of the playlist container */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+    </style>
 </head>
 <body>
     <h1>MP3 Player</h1>
@@ -33,9 +39,10 @@
                     return a.name.localeCompare(b.name);
                 });
 
-                // Create playlist
+                // Create playlist (limit to first 10 items)
                 const playlist = document.getElementById('playlist');
-                mp3Files.forEach(file => {
+                for (let i = 0; i < Math.min(10, mp3Files.length); i++) {
+                    const file = mp3Files[i];
                     const listItem = document.createElement('li');
                     const link = document.createElement('a');
                     link.textContent = file.name;
@@ -48,7 +55,7 @@
                     };
                     listItem.appendChild(link);
                     playlist.appendChild(listItem);
-                });
+                }
 
                 // Play the first song in the playlist by default
                 if (mp3Files.length > 0) {
