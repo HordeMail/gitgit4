@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP3 Player</title>
+</head>
+<body>
+    <h1>MP3 Player</h1>
+    
+    <!-- Form for uploading MP3 files -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="mp3File" accept=".mp3" required>
+        <button type="submit">Upload MP3</button>
+    </form>
+    
+    <!-- Audio player -->
+    <audio id="audioPlayer" controls>
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var fileInput = document.getElementById('mp3File');
+            var file = fileInput.files[0];
+            
+            // Generate a random file name
+            var fileName = 'audio_' + Date.now() + '.mp3';
+            
+            // Create a FormData object and append the file
+            var formData = new FormData();
+            formData.append('file', file, fileName);
+            
+            // Set up XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+            xhr.open('PUT', 'https://github.com/your_username/your_repository/raw/main/' + fileName, true);
+            
+            // Upload file
+            xhr.send(file);
+            
+            // Display uploaded file in audio player
+            var audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = 'https://raw.githubusercontent.com/your_username/your_repository/main/' + fileName;
+        });
+    </script>
+</body>
+</html>
