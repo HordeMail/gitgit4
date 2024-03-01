@@ -74,7 +74,9 @@
                 mp3Files.forEach(file => {
                     const listItem = document.createElement('li');
                     const link = document.createElement('a');
-                    link.textContent = file.name;
+                    // Remove ".mp3" extension from file name
+                    const fileNameWithoutExtension = file.name.replace(/\.mp3$/, '');
+                    link.textContent = fileNameWithoutExtension; // Display name without ".mp3" extension
                     link.href = file.download_url;
                     link.onclick = function(event) {
                         event.preventDefault();
